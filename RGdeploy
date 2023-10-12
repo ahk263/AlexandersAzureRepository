@@ -23,16 +23,6 @@
         "metadata": {"description": "This is where the user needs to name their globally unique storage account"}
     },
 
-    "VNetName": 
-    {
-      "type": "string"
-    },
-
-    "SubnetName": 
-    {
-      "type": "string"
-    },
-
     "adminUsername": 
     {
       "type": "string",
@@ -52,18 +42,6 @@
       "metadata": {"description": "description"}
     },
 
-    "ChooseYourVNet": 
-    {
-      "type": "string",
-      "metadata": {"description": "The user must enter the name of the VNET that is targeted"}
-    },
-
-    "ChooseYourSubnet": 
-    {
-      "type": "string",
-      "metadata": {"description": "The user must entre the name of the Subnet that is targeted"}
-    },
-
     "NumberOfVMs":
     {
       "type": "int",
@@ -76,14 +54,16 @@
   "variables": 
   {
     "vmName": "[concat(parameters('projectName'), '-vm')]",
-    "networkInterfaceName": "[concat(parameters('projectName'), '-nic')]"
+    "networkInterfaceName": "[concat(parameters('projectName'), '-nic')]",
+    "VNetName": "[concat(parameters('projectName'),'-VNet')]",
+    "SubnetName": "[concat(parameters('projectName'),'-SubNet')]"
   },
 
   "resources": 
   [
 
     {
-      "name": "[parameters('VNetName')]",
+      "name": "[variables('VNetName')]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2023-04-01",
       "location": "[resourceGroup().location]",
@@ -99,7 +79,7 @@
        "subnets": 
        [
         {
-          "name": "[parameters('SubnetName')]",
+          "name": "[variables('SubnetName')]",
           "properties": {"addressPrefix": "10.0.0.0/24"}
         }
        ]
@@ -141,7 +121,7 @@
               "privateIPAllocationMethod": "Dynamic",
               "subnet": 
               {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('ChooseYourVNet'), parameters('ChooseYourSubnet'))]"
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VNetName'), variables('SubnetName'))]"
               }
             }
           }
